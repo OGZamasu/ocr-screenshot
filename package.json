@@ -1,0 +1,76 @@
+{
+  "name": "ocr-screenshot",
+  "version": "1.0.0",
+  "description": "A cross-platform app for capturing screenshots and performing OCR.",
+  "main": "main.js",
+  "homepage": "https://zamasu.dev",
+  "author": {
+    "name": "Zamasu",
+    "email": "owner@onlyzamasu.com"
+  },
+  "scripts": {
+    "start": "electron --trace-warnings .",
+    "build": "electron-builder",
+    "build:all": "electron-builder --mac --win --linux"
+  },
+  "dependencies": {
+    "axios": "^1.7.4",
+    "clipboardy": "^4.0.0",
+    "flowbite": "^2.5.1",
+    "form-data": "^4.0.0",
+    "screenshot-desktop": "^1.15.0",
+    "temp": "^0.9.4"
+  },
+  "license": "ISC",
+  "keywords": [],
+  "devDependencies": {
+    "electron": "^31.4.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "zam.asu.ocr-screenshot",
+    "productName": "OCR Screenshot",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "index.html",
+      "preload.js",
+      "assets/**/*"
+    ],
+    "mac": {
+      "category": "zam.asu.utilities",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        },
+        {
+          "target": "zip",
+          "arch": ["x64", "arm64"]
+        }
+      ],
+      "artifactName": "${productName}-${version}-${arch}.${ext}",
+      "hardenedRuntime": true,
+      "entitlements": "./entitlements.mac.plist",
+      "entitlementsInherit": "./entitlements.mac.plist",
+      "type": "distribution",
+      "icon": "assets/icon_full.png"
+    },
+    "win": {
+      "target": "nsis",
+      "artifactName": "${productName}-${version}-setup.${ext}",
+      "icon": "assets/icon_full.png"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "artifactName": "${productName}-${version}-${arch}.${ext}",
+      "icon": "assets/icon_full.png",
+      "maintainer": "Zamasu <owner@onlyzamasu.com>"
+    }
+  }
+}

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR Screenshot App</title>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.css" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .draggable {
+            -webkit-app-region: drag;
+        }
+        .no-drag {
+            -webkit-app-region: no-drag;
+        }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        #hide-window, #copy-to-clipboard {
+            cursor: pointer;
+        }
+        #menu{
+            z-index: 999
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Disable scrolling */
+        }
+        #draggable-area {
+            width: 320px;
+            height: 240px;
+            min-width: 320px;
+            min-height: 240px;
+        }
+    </style>
+</head>
+<body id="draggable-area" class="w-320px h-240px min-w-320px min-h-240px">
+<div class="flex items-center justify-center h-full w-full">
+    <div id="menu" class="absolute flex gap-1 top-0 left-0 p-2">
+        <svg class="draggable" width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16.1924 5.65683C16.5829 5.2663 16.5829 4.63314 16.1924 4.24261L13.364 1.41419C12.5829 0.633139 11.3166 0.633137 10.5355 1.41419L7.70711 4.24261C7.31658 4.63314 7.31658 5.2663 7.70711 5.65683C8.09763 6.04735 8.73079 6.04735 9.12132 5.65683L11 3.77812V11.0503H3.72784L5.60655 9.17157C5.99707 8.78104 5.99707 8.14788 5.60655 7.75735C5.21602 7.36683 4.58286 7.36683 4.19234 7.75735L1.36391 10.5858C0.582863 11.3668 0.582859 12.6332 1.36391 13.4142L4.19234 16.2426C4.58286 16.6332 5.21603 16.6332 5.60655 16.2426C5.99707 15.8521 5.99707 15.219 5.60655 14.8284L3.8284 13.0503H11V20.2219L9.12132 18.3432C8.73079 17.9526 8.09763 17.9526 7.7071 18.3432C7.31658 18.7337 7.31658 19.3669 7.7071 19.7574L10.5355 22.5858C11.3166 23.3669 12.5829 23.3669 13.364 22.5858L16.1924 19.7574C16.5829 19.3669 16.5829 18.7337 16.1924 18.3432C15.8019 17.9526 15.1687 17.9526 14.7782 18.3432L13 20.1213V13.0503H20.071L18.2929 14.8284C17.9024 15.219 17.9024 15.8521 18.2929 16.2426C18.6834 16.6332 19.3166 16.6332 19.7071 16.2426L22.5355 13.4142C23.3166 12.6332 23.3166 11.3668 22.5355 10.5858L19.7071 7.75735C19.3166 7.36683 18.6834 7.36683 18.2929 7.75735C17.9024 8.14788 17.9024 8.78104 18.2929 9.17157L20.1716 11.0503H13V3.87867L14.7782 5.65683C15.1687 6.04735 15.8019 6.04735 16.1924 5.65683Z" fill="#0F0F0F"/>
+        </svg>
+        <svg id="copy-to-clipboard" fill="#000000" height="24px" width="24px" version="1.1"
+             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+             viewBox="0 0 330 330" xml:space="preserve">
+                <g>
+                    <path d="M35,270h45v45c0,8.284,6.716,15,15,15h200c8.284,0,15-6.716,15-15V75c0-8.284-6.716-15-15-15h-45V15
+                        c0-8.284-6.716-15-15-15H35c-8.284,0-15,6.716-15,15v240C20,263.284,26.716,270,35,270z M280,300H110V90h170V300z M50,30h170v30H95
+                        c-8.284,0-15,6.716-15,15v165H50V30z"/>
+                    <path d="M155,120c-8.284,0-15,6.716-15,15s6.716,15,15,15h80c8.284,0,15-6.716,15-15s-6.716-15-15-15H155z"/>
+                    <path d="M235,180h-80c-8.284,0-15,6.716-15,15s6.716,15,15,15h80c8.284,0,15-6.716,15-15S243.284,180,235,180z"/>
+                    <path d="M235,240h-80c-8.284,0-15,6.716-15,15c0,8.284,6.716,15,15,15h80c8.284,0,15-6.716,15-15C250,246.716,243.284,240,235,240z
+                        "/>
+                </g>
+            </svg>
+        <svg id="hide-window" width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g id="Edit / Hide">
+                <path id="Vector" d="M3.99989 4L19.9999 20M16.4999 16.7559C15.1473 17.4845 13.6185 17.9999 11.9999 17.9999C8.46924 17.9999 5.36624 15.5478 3.5868 13.7788C3.1171 13.3119 2.88229 13.0784 2.7328 12.6201C2.62619 12.2933 2.62616 11.7066 2.7328 11.3797C2.88233 10.9215 3.11763 10.6875 3.58827 10.2197C4.48515 9.32821 5.71801 8.26359 7.17219 7.42676M19.4999 14.6335C19.8329 14.3405 20.138 14.0523 20.4117 13.7803L20.4146 13.7772C20.8832 13.3114 21.1182 13.0779 21.2674 12.6206C21.374 12.2938 21.3738 11.7068 21.2672 11.38C21.1178 10.9219 20.8827 10.6877 20.4133 10.2211C18.6338 8.45208 15.5305 6 11.9999 6C11.6624 6 11.3288 6.02241 10.9999 6.06448M13.3228 13.5C12.9702 13.8112 12.5071 14 11.9999 14C10.8953 14 9.99989 13.1046 9.99989 12C9.99989 11.4605 10.2135 10.9711 10.5608 10.6113" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+        </svg>
+    </div>
+    <label for="dropzone-file" class="relative flex flex-col items-center justify-center w-full h-full border-gray-300 cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+            <svg class="w-10 h-10 mb-3 text-gray-400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" fill="currentColor" viewBox="0 0 20 16">
+                <path d="M10 0C9.448 0 9 0.448 9 1C9 1.553 9.448 2 10 2H18V14H2V2H6C6.552 2 7 1.553 7 1C7 0.448 6.552 0 6 0H2C0.896 0 0 0.896 0 2V14C0 15.105 0.896 16 2 16H18C19.104 16 20 15.105 20 14V2C20 0.896 19.104 0 18 0H10ZM14.707 5.707L10 10.414L5.293 5.707C5.105 5.52 4.851 5.426 4.596 5.426C4.341 5.426 4.088 5.52 3.899 5.707C3.512 6.094 3.512 6.726 3.899 7.113L9.293 12.5C9.683 12.895 10.317 12.895 10.707 12.5L16.101 7.113C16.488 6.726 16.488 6.094 16.101 5.707C15.712 5.32 15.08 5.32 14.707 5.707Z"/>
+            </svg>
+            <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+            <div id="ocr-result" class="max-h-16 mx-2 text-gray-500 dark:text-gray-400 line-clamp-3">OCR result will be displayed here.</div>
+        </div>
+        <input id="dropzone-file" type="file" accept="image/*" class="hidden" />
+    </label>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
+<script>
+    document.getElementById('dropzone-file').addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            window.electron.ipcRenderer.send('file-upload', file.path);
+            event.target.value = ""; // Reset the file input value
+        }
+    });
+
+    // Event listener for receiving OCR result
+    window.electron.ipcRenderer.on('ocr-result', (ocrText) => {
+        document.getElementById('ocr-result').innerText = ocrText;
+    });
+
+    // Event listener for copying text to clipboard
+    document.getElementById('copy-to-clipboard').addEventListener('click', () => {
+        const ocrText = document.getElementById('ocr-result').innerText;
+        console.log("sending copy-to-clipboard")
+        window.electron.ipcRenderer.send('copy-to-clipboard', ocrText);
+    });
+
+    // Event listener for hiding window
+    document.getElementById('hide-window').addEventListener('click', () => {
+        console.log("sending hide-window")
+        window.electron.ipcRenderer.send('hide-window');
+    });
+
+</script>
+</body>
+</html>
